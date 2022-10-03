@@ -1,6 +1,5 @@
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
+import '../pages/product_detailed_screen.dart';
 
 class ProductItem extends StatelessWidget {
   final String id;
@@ -15,29 +14,47 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: GridTile(
-        footer: GridTileBar(
-          leading: IconButton(
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 3,
+              blurRadius: 4,
+              offset: const Offset(3, 3),
+            ),
+          ]),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: GridTile(
+          footer: GridTileBar(
+            leading: IconButton(
+                color: Theme.of(context).colorScheme.secondary,
+                onPressed: () {},
+                icon: const Icon(Icons.favorite)),
+            backgroundColor: Colors.black87,
+            title: Text(
+              title,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.fade,
+            ),
+            trailing: IconButton(
               color: Theme.of(context).colorScheme.secondary,
+              icon: const Icon(Icons.shopping_cart),
               onPressed: () {},
-              icon: const Icon(Icons.favorite)),
-          backgroundColor: Colors.black87,
-          title: Text(
-            title,
-            textAlign: TextAlign.center,
-            overflow: TextOverflow.fade,
+            ),
           ),
-          trailing: IconButton(
-            color: Theme.of(context).colorScheme.secondary,
-            icon: const Icon(Icons.shopping_cart),
-            onPressed: () {},
+          child: GestureDetector(
+            onTap: () {
+              Navigator.of(context)
+                  .pushNamed(ProductDetailedScreen.routName, arguments: id);
+            },
+            child: Image.network(
+              imageUrl,
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        child: Image.network(
-          imageUrl,
-          fit: BoxFit.cover,
         ),
       ),
     );
