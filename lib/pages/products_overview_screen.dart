@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart.dart';
 
+import '../pages/cart_screen.dart';
 import '../widgets/products_grid.dart';
 import '../widgets/badge.dart';
 
@@ -27,7 +28,9 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                 builder: (context, cart, child) => Badge(
                     value: cart.count,
                     child: IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(CartScreen.routName);
+                        },
                         icon: Icon((cart.count > 0)
                             ? Icons.shopping_cart_checkout
                             : Icons.shopping_cart_outlined)))),
