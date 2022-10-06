@@ -98,14 +98,14 @@ class ProductDetailedScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 20,
                   ),
                   Text(
                     '\$${product.price}',
                     style: const TextStyle(fontSize: 20, color: Colors.grey),
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 20,
                   ),
                   Container(
                     width: double.infinity,
@@ -115,6 +115,9 @@ class ProductDetailedScreen extends StatelessWidget {
                       softWrap: true,
                       textAlign: TextAlign.center,
                     ),
+                  ),
+                  const SizedBox(
+                    height: 20,
                   ),
                   ElevatedButton.icon(
                       onPressed: () {

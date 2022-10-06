@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/cart.dart';
 
 import '../pages/cart_screen.dart';
+import '../widgets/app_drawer.dart';
 import '../widgets/products_grid.dart';
 import '../widgets/badge.dart';
 
@@ -29,7 +30,10 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                     value: cart.count,
                     child: IconButton(
                         onPressed: () {
-                          Navigator.of(context).pushNamed(CartScreen.routName);
+                          (cart.count > 0)
+                              ? Navigator.of(context)
+                                  .pushNamed(CartScreen.routName)
+                              : null;
                         },
                         icon: Icon((cart.count > 0)
                             ? Icons.shopping_cart_checkout
@@ -58,6 +62,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
             ),
           ],
         ),
+        drawer: const AppDrawer(),
         body: ProductsGrid(isFavoriteSelected));
   }
 }
