@@ -58,7 +58,10 @@ class CartItem extends StatelessWidget {
                 children: [
                   IconButton(
                       onPressed: () {
-                        cart.changeQuantity(productId, 'decrement');
+                        if (quantity == 1) {
+                          cart.removeItem(productId);
+                        }
+                        cart.changeQuantity(productId, Change.decrement);
                       },
                       icon: const Icon(Icons.arrow_left)),
                   Text(
@@ -67,7 +70,7 @@ class CartItem extends StatelessWidget {
                   ),
                   IconButton(
                       onPressed: () {
-                        cart.changeQuantity(productId, 'increment');
+                        cart.changeQuantity(productId, Change.increment);
                       },
                       icon: const Icon(Icons.arrow_right))
                 ],

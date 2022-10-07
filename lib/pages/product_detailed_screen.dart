@@ -24,6 +24,30 @@ class ProductDetailedScreen extends StatelessWidget {
     ]);
   }
 
+  Widget _buildAddToCardButton(context, product, cart) {
+    return ElevatedButton.icon(
+        onPressed: () {
+          cart.addItem(
+              productId: product.id,
+              title: product.title,
+              price: product.price);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              elevation: 10,
+              action: SnackBarAction(
+                  label: 'UNDO',
+                  onPressed: () {
+                    cart.undoAddItem(product.id);
+                  }),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              content: Text('Item added to a cart'),
+            ),
+          );
+        },
+        icon: const Icon(Icons.shopping_cart_outlined),
+        label: const Text('Add to cart'));
+  }
+
   @override
   Widget build(BuildContext context) {
     final id = ModalRoute.of(context)?.settings.arguments as String;
@@ -73,15 +97,7 @@ class ProductDetailedScreen extends StatelessWidget {
                       const SizedBox(
                         height: 30,
                       ),
-                      ElevatedButton.icon(
-                          onPressed: () {
-                            cart.addItem(
-                                productId: product.id,
-                                title: product.title,
-                                price: product.price);
-                          },
-                          icon: const Icon(Icons.shopping_cart_outlined),
-                          label: const Text('Add to cart'))
+                      _buildAddToCardButton(context, product, cart)
                     ],
                   ),
                 )
@@ -119,15 +135,7 @@ class ProductDetailedScreen extends StatelessWidget {
                   const SizedBox(
                     height: 20,
                   ),
-                  ElevatedButton.icon(
-                      onPressed: () {
-                        cart.addItem(
-                            productId: product.id,
-                            title: product.title,
-                            price: product.price);
-                      },
-                      icon: const Icon(Icons.shopping_cart_outlined),
-                      label: const Text('Add to cart'))
+                  _buildAddToCardButton(context, product, cart)
                 ],
               ),
       ),

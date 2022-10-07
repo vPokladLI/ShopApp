@@ -12,6 +12,11 @@ class CartItem {
       required this.price});
 }
 
+enum Change {
+  increment,
+  decrement,
+}
+
 class Cart with ChangeNotifier {
   Map<String, CartItem> _items = {};
 
@@ -21,6 +26,15 @@ class Cart with ChangeNotifier {
 
   int get count {
     return _items.length;
+  }
+
+  void undoAddItem(id) {
+    if (_items[id]!.quantity > 1) {
+      changeQuantity(id, Change.decrement);
+    } else {
+      removeItem(id);
+    }
+    notifyListeners();
   }
 
   bool isInCart(String productId) {
@@ -61,7 +75,7 @@ class Cart with ChangeNotifier {
   }
 
   void changeQuantity(id, direction) {
-    if (direction == 'increment') {
+    if (direction == Change.increment) {
       _items.update(
           id,
           (prev) => CartItem(
@@ -69,11 +83,16 @@ class Cart with ChangeNotifier {
               id: prev.id,
               title: prev.title,
               price: prev.price));
-    } else {
+    } else if (direction == Change.decrement) {
+      if (_items[id]!.quantity == 1) {
+        removeItem(id);
+        notifyListeners();
+        return;
+      }
       _items.update(
           id,
           (prev) => CartItem(
-              quantity: prev.quantity == 0 ? 0 : prev.quantity - 1,
+              quantity: prev.quantity = prev.quantity - 1,
               id: prev.id,
               title: prev.title,
               price: prev.price));
