@@ -31,6 +31,7 @@ class ProductItem extends StatelessWidget {
                   color: Theme.of(context).colorScheme.secondary,
                   onPressed: () {
                     product.toggleFavorite();
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         elevation: 10,
                         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -60,10 +61,11 @@ class ProductItem extends StatelessWidget {
                       productId: product.id,
                       title: product.title,
                       price: product.price);
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       elevation: 10,
                       action: SnackBarAction(
-                          textColor: Theme.of(context).colorScheme.onPrimary,
+                          textColor: Theme.of(context).colorScheme.secondary,
                           label: 'UNDO',
                           onPressed: () {
                             cart.undoAddItem(product.id);
