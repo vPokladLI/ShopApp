@@ -145,12 +145,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         .url('Image URL is not valid!')
                         .minLength(3, 'Image URL can\'t be empty')
                         .build(),
-                    onSaved: (newValue) => Product(
-                        title: _editedProduct.title,
-                        id: _editedProduct.id,
-                        imageUrl: newValue!,
-                        price: _editedProduct.price,
-                        description: _editedProduct.description),
+                    onSaved: (newValue) {
+                      _editedProduct = Product(
+                          title: _editedProduct.title,
+                          id: _editedProduct.id,
+                          imageUrl: newValue!,
+                          price: _editedProduct.price,
+                          description: _editedProduct.description);
+                    },
                     onEditingComplete: () {
                       setState(() {});
                     },
