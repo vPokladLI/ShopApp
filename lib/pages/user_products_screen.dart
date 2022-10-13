@@ -11,7 +11,7 @@ class UserProductsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void editItem() {
+    void addItem() {
       Navigator.of(context).pushNamed(EditProductScreen.routName);
     }
 
@@ -19,13 +19,7 @@ class UserProductsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your products'),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed(EditProductScreen.routName);
-              },
-              icon: Icon(Icons.add))
-        ],
+        actions: [IconButton(onPressed: addItem, icon: const Icon(Icons.add))],
       ),
       drawer: const AppDrawer(),
       body: Padding(
@@ -48,7 +42,11 @@ class UserProductsScreen extends StatelessWidget {
               child: Row(
                 children: [
                   IconButton(
-                      onPressed: editItem,
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(
+                            EditProductScreen.routName,
+                            arguments: products.allItems[i].id);
+                      },
                       icon: Icon(
                         Icons.edit,
                         color: Theme.of(context).colorScheme.primary,
@@ -67,7 +65,7 @@ class UserProductsScreen extends StatelessWidget {
       ),
       floatingActionButton:
           // ignore: prefer_const_constructors
-          FloatingActionButton(onPressed: () {}, child: Icon(Icons.add)),
+          FloatingActionButton(onPressed: addItem, child: Icon(Icons.add)),
     );
   }
 }

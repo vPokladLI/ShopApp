@@ -18,12 +18,42 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final _imageUrlFocus = FocusNode();
   final _form = GlobalKey<FormState>();
   var _editedProduct =
-      Product(id: '1', title: '', description: '', imageUrl: '', price: 0);
+      Product(id: '', title: '', description: '', imageUrl: '', price: 0);
+
+  var _initValues = {
+    'title': '',
+    'description': '',
+    'imageUrl': '',
+    'price': ''
+  };
+
+  var _isInit = true;
 
   @override
   void initState() {
     _imageUrlFocus.addListener(_updateImage);
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      final productId = ModalRoute.of(context)?.settings.arguments;
+      if (productId != null) {
+        _editedProduct = Provider.of<Products>(context, listen: false)
+            .findById(productId as String);
+
+        _initValues = {
+          'title': _editedProduct.title,
+          'description': _editedProduct.description,
+          'imageUrl': '',
+          'price': _editedProduct.price.toString()
+        };
+        _imageUrlController.text = _editedProduct.imageUrl;
+      }
+    }
+    _isInit = false;
+    super.didChangeDependencies();
   }
 
   @override
@@ -68,8 +98,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
               child: Column(
                 children: [
                   TextFormField(
-                    autocorrect: true,
                     decoration: const InputDecoration(labelText: 'Title'),
+                    initialValue: _initValues['title'],
+                    autocorrect: true,
                     textInputAction: TextInputAction.next,
                     onSaved: (newValue) {
                       _editedProduct = Product(
@@ -84,8 +115,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         .build(),
                   ),
                   TextFormField(
-                    autocorrect: true,
                     decoration: const InputDecoration(labelText: 'Description'),
+                    initialValue: _initValues['description'],
+                    autocorrect: true,
                     maxLines: 2,
                     keyboardType: TextInputType.multiline,
                     validator: ValidationBuilder()
@@ -102,6 +134,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   ),
                   TextFormField(
                     decoration: const InputDecoration(labelText: 'Price'),
+                    initialValue: _initValues['price'],
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
                     validator: (value) {
