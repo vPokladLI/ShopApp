@@ -53,12 +53,12 @@ class ProductItem extends StatelessWidget {
             trailing: Consumer<Cart>(
               builder: (_, cart, __) => IconButton(
                 color: Theme.of(context).colorScheme.secondary,
-                icon: Icon(cart.isInCart(product.id)
+                icon: Icon(cart.isInCart(product.id!)
                     ? Icons.shopping_cart
                     : Icons.shopping_cart_outlined),
                 onPressed: () {
                   cart.addItem(
-                      productId: product.id,
+                      productId: product.id!,
                       title: product.title,
                       price: product.price);
                   ScaffoldMessenger.of(context).hideCurrentSnackBar();

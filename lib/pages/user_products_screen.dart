@@ -52,7 +52,9 @@ class UserProductsScreen extends StatelessWidget {
                         color: Theme.of(context).colorScheme.primary,
                       )),
                   IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        products.deleteProduct(products.allItems[i].id!);
+                      },
                       icon: Icon(
                         Icons.delete,
                         color: Theme.of(context).colorScheme.secondary,

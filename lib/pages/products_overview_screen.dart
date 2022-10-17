@@ -41,11 +41,8 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
             PopupMenuButton(
               onSelected: (FilterOptions value) {
                 setState(() {
-                  if (value == FilterOptions.favorites) {
-                    isFavoriteSelected = true;
-                  } else {
-                    isFavoriteSelected = false;
-                  }
+                  isFavoriteSelected =
+                      (value == FilterOptions.favorites) ? true : false;
                 });
               },
               icon: const Icon(Icons.more_vert),
