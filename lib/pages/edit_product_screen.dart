@@ -88,15 +88,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
     if (_editedProduct.id != null) {
       Provider.of<Products>(context, listen: false)
           .updateProduct(_editedProduct);
-      Navigator.of(context).pop();
     } else {
       Provider.of<Products>(context, listen: false)
           .addProduct(_editedProduct)
-          .then((_) {
-        _isLoading = false;
-        Navigator.of(context).pop();
-      });
+          .then((_) {});
     }
+    _isLoading = false;
+    Navigator.of(context).pop();
   }
 
   @override

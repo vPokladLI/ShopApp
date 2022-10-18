@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart.dart';
+import '../providers/products_provider.dart';
 
 import '../pages/cart_screen.dart';
 import '../widgets/app_drawer.dart';
@@ -18,7 +19,22 @@ class ProductsOverviewScreen extends StatefulWidget {
 }
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
-  var isFavoriteSelected = false;
+  var _isFavoriteSelected = false;
+  var _isLoading = false;
+
+  @override
+  void initState() {
+    _isLoading = true;
+    Provider.of<Products>(context, listen: false)
+        .fetchAndSetProducts()
+        .then((_) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +57,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
             PopupMenuButton(
               onSelected: (FilterOptions value) {
                 setState(() {
-                  isFavoriteSelected =
+                  _isFavoriteSelected =
                       (value == FilterOptions.favorites) ? true : false;
                 });
               },
@@ -60,6 +76,10 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
           ],
         ),
         drawer: const AppDrawer(),
-        body: ProductsGrid(isFavoriteSelected));
+        body: _isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : ProductsGrid(_isFavoriteSelected));
   }
 }

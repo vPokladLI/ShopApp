@@ -16,50 +16,57 @@ class UserProductsScreen extends StatelessWidget {
     }
 
     final products = context.watch<Products>();
+    Future<void> _refreshItems() async {
+      products.fetchAndSetProducts();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your products'),
         actions: [IconButton(onPressed: addItem, icon: const Icon(Icons.add))],
       ),
       drawer: const AppDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.all(10),
-        child: ListView.separated(
-          itemCount: products.allItems.length,
-          separatorBuilder: (context, index) => Divider(
-            thickness: 1,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          itemBuilder: (_, i) => ListTile(
-            title: Text(products.allItems[i].title),
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(
-                products.allItems[i].imageUrl,
-              ),
+      body: RefreshIndicator(
+        onRefresh: _refreshItems,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: ListView.separated(
+            itemCount: products.allItems.length,
+            separatorBuilder: (context, index) => Divider(
+              thickness: 1,
+              color: Theme.of(context).colorScheme.primary,
             ),
-            trailing: SizedBox(
-              width: 100,
-              child: Row(
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(
-                            EditProductScreen.routName,
-                            arguments: products.allItems[i].id);
-                      },
-                      icon: Icon(
-                        Icons.edit,
-                        color: Theme.of(context).colorScheme.primary,
-                      )),
-                  IconButton(
-                      onPressed: () {
-                        products.deleteProduct(products.allItems[i].id!);
-                      },
-                      icon: Icon(
-                        Icons.delete,
-                        color: Theme.of(context).colorScheme.secondary,
-                      )),
-                ],
+            itemBuilder: (_, i) => ListTile(
+              title: Text(products.allItems[i].title),
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(
+                  products.allItems[i].imageUrl,
+                ),
+              ),
+              trailing: SizedBox(
+                width: 100,
+                child: Row(
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(
+                              EditProductScreen.routName,
+                              arguments: products.allItems[i].id);
+                        },
+                        icon: Icon(
+                          Icons.edit,
+                          color: Theme.of(context).colorScheme.primary,
+                        )),
+                    IconButton(
+                        onPressed: () {
+                          products.deleteProduct(products.allItems[i].id!);
+                        },
+                        icon: Icon(
+                          Icons.delete,
+                          color: Theme.of(context).colorScheme.secondary,
+                        )),
+                  ],
+                ),
               ),
             ),
           ),
