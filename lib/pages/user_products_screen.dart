@@ -16,7 +16,7 @@ class UserProductsScreen extends StatelessWidget {
     }
 
     final products = context.watch<Products>();
-    Future<void> _refreshItems() async {
+    Future<void> refreshItems() async {
       products.fetchAndSetProducts();
     }
 
@@ -27,7 +27,7 @@ class UserProductsScreen extends StatelessWidget {
       ),
       drawer: const AppDrawer(),
       body: RefreshIndicator(
-        onRefresh: _refreshItems,
+        onRefresh: refreshItems,
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: ListView.separated(
