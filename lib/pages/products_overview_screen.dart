@@ -20,17 +20,25 @@ class ProductsOverviewScreen extends StatefulWidget {
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var _isFavoriteSelected = false;
-  var _isLoading = false;
+  var _isLoading = true;
 
   @override
   void initState() {
     _isLoading = true;
-    Provider.of<Products>(context, listen: false)
-        .fetchAndSetProducts()
-        .then((_) {
-      setState(() {
-        _isLoading = false;
-      });
+    try {
+      Provider.of<Products>(context, listen: false).fetchAndSetProducts();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
+          backgroundColor: Theme.of(context).colorScheme.error,
+          content: Text(
+            e.toString(),
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          )));
+    }
+    setState(() {
+      _isLoading = false;
     });
     super.initState();
   }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop_app/models/http_exception.dart';
 // import '../services/database.dart';
 import 'product_provider.dart';
 
@@ -23,25 +24,26 @@ class Products with ChangeNotifier {
 
   Future fetchAndSetProducts() async {
     final url = Uri.https(_endpoint, '/products.json');
-    try {
-      final response = await http.get(url);
-      final Map<String, dynamic> decodedResponse = jsonDecode(response.body);
-      final List<Product> fetchProdList = [];
 
-      decodedResponse.forEach((prodId, product) {
-        fetchProdList.add(Product(
-            id: prodId,
-            title: product['title'],
-            description: product['description'],
-            imageUrl: product['imageUrl'],
-            isFavorite: product['isFavorite'],
-            price: product['price']));
-      });
-      _items = fetchProdList;
-      notifyListeners();
-    } catch (e) {
-      rethrow;
+    final response = await http.get(url);
+    final extractedData = json.decode(response.body);
+
+    if (extractedData == null) {
+      return;
     }
+    final List<Product> loadedProducts = [];
+    extractedData.forEach((prodId, prodData) {
+      loadedProducts.add(Product(
+        id: prodId,
+        title: prodData['title'],
+        description: prodData['description'],
+        price: prodData['price'],
+        isFavorite: prodData['isFavorite'],
+        imageUrl: prodData['imageUrl'],
+      ));
+    });
+    _items = loadedProducts;
+    notifyListeners();
   }
 
   Future addProduct(Product product) async {
@@ -87,7 +89,7 @@ class Products with ChangeNotifier {
     }
   }
 
-  void updateProduct(Product newProduct) async {
+  Future updateProduct(Product newProduct) async {
     final url = Uri.https(_endpoint, '/products/${newProduct.id}.json');
     final index = _items.indexWhere((element) => element.id == newProduct.id);
     if (index >= 0) {

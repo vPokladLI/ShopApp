@@ -16,9 +16,12 @@ class ProductsGrid extends StatelessWidget {
     final productsData = Provider.of<Products>(context);
     final products = isFav ? productsData.favoriteItems : productsData.allItems;
 
-    return (isFav && productsData.favoriteItems.isEmpty)
+    return products.isEmpty
         ? Center(
-            child: Text('No items added to favorites yet...',
+            child: Text(
+                isFav
+                    ? 'No items added to favorites yet...'
+                    : 'No products found! Try later...',
                 style: Theme.of(context).textTheme.titleLarge),
           )
         : GridView.builder(

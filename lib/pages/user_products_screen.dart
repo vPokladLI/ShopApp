@@ -28,49 +28,54 @@ class UserProductsScreen extends StatelessWidget {
       drawer: const AppDrawer(),
       body: RefreshIndicator(
         onRefresh: refreshItems,
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: ListView.separated(
-            itemCount: products.allItems.length,
-            separatorBuilder: (context, index) => Divider(
-              thickness: 1,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            itemBuilder: (_, i) => ListTile(
-              title: Text(products.allItems[i].title),
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(
-                  products.allItems[i].imageUrl,
+        child: products.allItems.isEmpty
+            ? const Center(
+                child: Text('No products found! Try later...'),
+              )
+            : Padding(
+                padding: const EdgeInsets.all(10),
+                child: ListView.separated(
+                  itemCount: products.allItems.length,
+                  separatorBuilder: (context, index) => Divider(
+                    thickness: 1,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  itemBuilder: (_, i) => ListTile(
+                    title: Text(products.allItems[i].title),
+                    leading: CircleAvatar(
+                      backgroundImage: NetworkImage(
+                        products.allItems[i].imageUrl,
+                      ),
+                    ),
+                    trailing: SizedBox(
+                      width: 100,
+                      child: Row(
+                        children: [
+                          IconButton(
+                              onPressed: () {
+                                Navigator.of(context).pushNamed(
+                                    EditProductScreen.routName,
+                                    arguments: products.allItems[i].id);
+                              },
+                              icon: Icon(
+                                Icons.edit,
+                                color: Theme.of(context).colorScheme.primary,
+                              )),
+                          IconButton(
+                              onPressed: () {
+                                products
+                                    .deleteProduct(products.allItems[i].id!);
+                              },
+                              icon: Icon(
+                                Icons.delete,
+                                color: Theme.of(context).colorScheme.secondary,
+                              )),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
-              trailing: SizedBox(
-                width: 100,
-                child: Row(
-                  children: [
-                    IconButton(
-                        onPressed: () {
-                          Navigator.of(context).pushNamed(
-                              EditProductScreen.routName,
-                              arguments: products.allItems[i].id);
-                        },
-                        icon: Icon(
-                          Icons.edit,
-                          color: Theme.of(context).colorScheme.primary,
-                        )),
-                    IconButton(
-                        onPressed: () {
-                          products.deleteProduct(products.allItems[i].id!);
-                        },
-                        icon: Icon(
-                          Icons.delete,
-                          color: Theme.of(context).colorScheme.secondary,
-                        )),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
       ),
       floatingActionButton:
           // ignore: prefer_const_constructors

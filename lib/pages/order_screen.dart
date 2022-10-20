@@ -13,10 +13,9 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-  var _isLoading = false;
+  var _isLoading = true;
   @override
   void initState() {
-    _isLoading = true;
     Provider.of<Orders>(context, listen: false).fetchAndSetOrders().then((_) {
       setState(() {
         _isLoading = false;

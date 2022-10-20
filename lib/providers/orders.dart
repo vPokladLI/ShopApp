@@ -47,7 +47,7 @@ class Orders with ChangeNotifier {
                         title: e['title']))
                     .toList()));
           });
-          _orders = loadedOrders;
+          _orders = loadedOrders.reversed.toList();
         }
       }
     } catch (e) {

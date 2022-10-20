@@ -76,24 +76,24 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
   }
 
-  void _saveForm() {
-    setState(() {
-      _isLoading = true;
-    });
+  Future _saveForm() async {
     final isValid = _form.currentState!.validate();
     if (!isValid) {
       return;
     }
+    setState(() {
+      _isLoading = true;
+    });
     _form.currentState!.save();
     if (_editedProduct.id != null) {
-      Provider.of<Products>(context, listen: false)
+      await Provider.of<Products>(context, listen: false)
           .updateProduct(_editedProduct);
     } else {
-      Provider.of<Products>(context, listen: false)
-          .addProduct(_editedProduct)
-          .then((_) {});
+      await Provider.of<Products>(context, listen: false)
+          .addProduct(_editedProduct);
     }
     _isLoading = false;
+    // ignore: use_build_context_synchronously
     Navigator.of(context).pop();
   }
 
