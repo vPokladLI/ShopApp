@@ -16,14 +16,6 @@ class CartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
 
-    void placeOrder() {
-      if (cart.items.isEmpty) return;
-      Provider.of<Orders>(context, listen: false)
-          .addOrder(cart.total, cart.items.values.toList());
-      cart.clear();
-      Navigator.of(context).pushReplacementNamed(OrderScreen.routName);
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your`s shopping cart '),
@@ -48,21 +40,15 @@ class CartScreen extends StatelessWidget {
                         label: Text('\$${cart.total.toStringAsFixed(2)}'),
                         labelPadding: const EdgeInsets.all(3),
                         labelStyle: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
+                            color: Theme.of(context).colorScheme.onSecondary,
                             fontSize: 15,
                             fontWeight: FontWeight.bold),
                         backgroundColor:
                             Theme.of(context).colorScheme.secondary,
                       ),
                     ),
-                    TextButton.icon(
-                      onPressed: placeOrder,
-                      icon: const Icon(Icons.monetization_on_sharp),
-                      label: const Text(
-                        'ORDER NOW',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
+                    OrderButton(
+                      cart: cart,
                     )
                   ]),
             ),
@@ -91,6 +77,59 @@ class CartScreen extends StatelessWidget {
                 ),
               )
       ]),
+    );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  final Cart cart;
+  const OrderButton({
+    required this.cart,
+    super.key,
+  });
+
+  @override
+  State<OrderButton> createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  Future<void> placeOrder() async {
+    if (widget.cart.items.isEmpty) return;
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+      await Provider.of<Orders>(context, listen: false)
+          .addOrder(widget.cart.total, widget.cart.items.values.toList());
+
+      widget.cart.clear();
+      // ignore: use_build_context_synchronously
+      Navigator.of(context).pushReplacementNamed(OrderScreen.routName);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          padding: EdgeInsets.symmetric(vertical: 50, horizontal: 10),
+          backgroundColor: Theme.of(context).colorScheme.error,
+          content: Text(
+            e.toString(),
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          )));
+    }
+  }
+
+  var _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton.icon(
+      onPressed: placeOrder,
+      icon: _isLoading
+          ? CircularProgressIndicator()
+          : Icon(Icons.monetization_on_sharp),
+      label: const Text(
+        'ORDER NOW',
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
     );
   }
 }

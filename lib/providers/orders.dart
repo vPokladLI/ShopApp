@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop_app/models/http_exception.dart';
 
 import './cart.dart';
 
@@ -58,35 +59,32 @@ class Orders with ChangeNotifier {
     final url = Uri.https(_endpoint, '/orders.json');
     final timeStamp = DateTime.now();
 
-    try {
-      final response = await http.post(url,
-          body: json.encode({
-            'amount': amount,
-            'products': products
-                .map((el) => {
-                      'id': el.id,
-                      'title': el.title,
-                      'quantity': el.quantity,
-                      'price': el.price,
-                    })
-                .toList(),
-            'dateTime': timeStamp.toIso8601String(),
-          }));
-      print(response.statusCode);
+    final response = await http.post(url,
+        body: json.encode({
+          'amount': amount,
+          'products': products
+              .map((el) => {
+                    'id': el.id,
+                    'title': el.title,
+                    'quantity': el.quantity,
+                    'price': el.price,
+                  })
+              .toList(),
+          'dateTime': timeStamp.toIso8601String(),
+        }));
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> decodedResponse = jsonDecode(response.body);
-        _orders.insert(
-            0,
-            OrderItem(
-                amount: amount,
-                products: products,
-                dateTime: timeStamp,
-                id: decodedResponse['name']));
-        notifyListeners();
-      }
-    } catch (e) {
-      rethrow;
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> decodedResponse = jsonDecode(response.body);
+      _orders.insert(
+          0,
+          OrderItem(
+              amount: amount,
+              products: products,
+              dateTime: timeStamp,
+              id: decodedResponse['name']));
+      notifyListeners();
+    } else {
+      throw HttpException('Failed to make order... Try again later');
     }
   }
 
