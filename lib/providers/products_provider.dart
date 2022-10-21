@@ -26,6 +26,7 @@ class Products with ChangeNotifier {
     final url = Uri.https(_endpoint, '/products.json');
 
     final response = await http.get(url);
+
     final extractedData = json.decode(response.body);
 
     if (extractedData == null) {
