@@ -80,12 +80,160 @@ class AuthCard extends StatefulWidget {
 }
 
 class _AuthCardState extends State<AuthCard> {
+  var _isLoading = false;
+  var _passwordVisible = true;
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.login;
   Map<String, String> _authData = {'email': '', 'password': ''};
   final _passwordController = TextEditingController();
+
+  void _submitForm() {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    _formKey.currentState!.save();
+    setState(() {
+      _isLoading = true;
+    });
+
+    if (_authMode == AuthMode.login) {
+// login
+    } else {
+      //signIn
+    }
+
+    // setState(() {
+    //   _isLoading = false;
+    // });
+  }
+
+  void _switchAuthMode() {
+    if (_authMode == AuthMode.login) {
+      setState(() {
+        _authMode = AuthMode.signUp;
+      });
+    } else {
+      setState(() {
+        _authMode = AuthMode.login;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container();
+    final size = MediaQuery.of(context).size;
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      elevation: 8,
+      child: Container(
+        height: _authMode == AuthMode.login ? 300 : 380,
+        width: size.width * 0.75,
+        constraints:
+            BoxConstraints(minHeight: _authMode == AuthMode.login ? 260 : 320),
+        padding: const EdgeInsets.all(16),
+        child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    TextFormField(
+                      textInputAction: TextInputAction.next,
+                      decoration: const InputDecoration(label: Text('E-mail')),
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) {
+                        if (value!.isEmpty || !value.contains('@')) {
+                          return 'e-mail is not valid';
+                        }
+                        return null;
+                      },
+                      onSaved: (newValue) {
+                        _authData['email'] = newValue!;
+                      },
+                    ),
+                    TextFormField(
+                      textInputAction: TextInputAction.next,
+                      obscureText: _passwordVisible,
+                      decoration: InputDecoration(
+                        label: const Text('Password'),
+                        suffixIcon: IconButton(
+                          icon: Icon(_passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off),
+                          onPressed: () {
+                            setState(() {
+                              _passwordVisible = !_passwordVisible;
+                            });
+                          },
+                        ),
+                      ),
+                      keyboardType: TextInputType.visiblePassword,
+                      controller: _passwordController,
+                      validator: (value) {
+                        if (value!.length < 8) {
+                          return 'Password length must be at least 8 charts';
+                        }
+                        return null;
+                      },
+                      onSaved: (newValue) {
+                        _authData['password'] = newValue!;
+                      },
+                    ),
+                    if (_authMode == AuthMode.signUp)
+                      TextFormField(
+                        textInputAction: TextInputAction.done,
+                        obscureText: _passwordVisible,
+                        enabled: _authMode == AuthMode.signUp,
+                        decoration: InputDecoration(
+                          label: const Text('Confirm password'),
+                          suffixIcon: IconButton(
+                            icon: Icon(_passwordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off),
+                            onPressed: () {
+                              setState(() {
+                                _passwordVisible = !_passwordVisible;
+                              });
+                            },
+                          ),
+                        ),
+                        keyboardType: TextInputType.visiblePassword,
+                        validator: _authMode == AuthMode.signUp
+                            ? (value) {
+                                if (value != _passwordController.text) {
+                                  return 'Passwords are not equal';
+                                }
+                                return null;
+                              }
+                            : null,
+                        onEditingComplete: _submitForm,
+                      ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    if (_isLoading) const CircularProgressIndicator(),
+                    if (!_isLoading)
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 50, vertical: 15)),
+                          onPressed: _submitForm,
+                          child: Text(_authMode == AuthMode.login
+                              ? 'Login'
+                              : 'Register')),
+                    TextButton(
+                        onPressed: _switchAuthMode,
+                        child: Text(
+                          _authMode == AuthMode.login
+                              ? 'Don\'t have account? Register!'
+                              : 'Already have account? Login!',
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                          ),
+                        )),
+                  ]),
+            )),
+      ),
+    );
   }
 }
