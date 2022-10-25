@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
+import '../pages/products_overview_screen.dart';
+import '../services/auth_service.dart';
 
 enum AuthMode { signUp, login }
 
@@ -82,12 +82,19 @@ class AuthCard extends StatefulWidget {
 }
 
 class _AuthCardState extends State<AuthCard> {
+  Auth _auth = Auth();
   var _isLoading = false;
   var _passwordVisible = true;
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.login;
   Map<String, String> _authData = {'email': '', 'password': ''};
   final _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   void _submitForm() {
     if (!_formKey.currentState!.validate()) {
@@ -99,9 +106,17 @@ class _AuthCardState extends State<AuthCard> {
     });
 
     if (_authMode == AuthMode.login) {
+      _auth
+          .loginWithEmailPassword(_authData['email']!, _authData['password']!)
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+
 // login
     } else {
-      Provider.of<AuthProvider>(context, listen: false)
+      _auth
           .registerWithEmailPassword(
               _authData['email']!, _authData['password']!)
           .then((_) {
@@ -153,7 +168,7 @@ class _AuthCardState extends State<AuthCard> {
                         return null;
                       },
                       onSaved: (newValue) {
-                        _authData['email'] = newValue!;
+                        _authData['email'] = newValue!.trim();
                       },
                     ),
                     TextFormField(
@@ -175,13 +190,13 @@ class _AuthCardState extends State<AuthCard> {
                       keyboardType: TextInputType.visiblePassword,
                       controller: _passwordController,
                       validator: (value) {
-                        if (value!.length < 8) {
-                          return 'Password length must be at least 8 charts';
+                        if (value!.length < 6) {
+                          return 'Password length must be at least 6 characters';
                         }
                         return null;
                       },
                       onSaved: (newValue) {
-                        _authData['password'] = newValue!;
+                        _authData['password'] = newValue!.trim();
                       },
                     ),
                     if (_authMode == AuthMode.signUp)
@@ -232,7 +247,7 @@ class _AuthCardState extends State<AuthCard> {
                           _authMode == AuthMode.login
                               ? 'Don\'t have account? Register!'
                               : 'Already have account? Login!',
-                          style: TextStyle(
+                          style: const TextStyle(
                             decoration: TextDecoration.underline,
                           ),
                         )),

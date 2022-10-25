@@ -25,7 +25,7 @@ class UserProductsScreen extends StatelessWidget {
         title: const Text('Your products'),
         actions: [IconButton(onPressed: addItem, icon: const Icon(Icons.add))],
       ),
-      drawer: const AppDrawer(),
+      drawer: AppDrawer(),
       body: RefreshIndicator(
         onRefresh: refreshItems,
         child: products.allItems.isEmpty

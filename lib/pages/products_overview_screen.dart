@@ -83,7 +83,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
             ),
           ],
         ),
-        drawer: const AppDrawer(),
+        drawer: AppDrawer(),
         body: _isLoading
             ? const Center(
                 child: CircularProgressIndicator(),

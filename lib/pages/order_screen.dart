@@ -35,7 +35,7 @@ class _OrderScreenState extends State<OrderScreen> {
         appBar: AppBar(
           title: const Text('Order details'),
         ),
-        drawer: const AppDrawer(),
+        drawer: AppDrawer(),
         body: RefreshIndicator(
           onRefresh: refreshOrders,
           child: _isLoading

@@ -4,9 +4,11 @@ import '../pages/products_overview_screen.dart';
 import '../pages/order_screen.dart';
 import '../pages/user_products_screen.dart';
 
-class AppDrawer extends StatelessWidget {
-  const AppDrawer({super.key});
+import '../services/auth_service.dart';
 
+class AppDrawer extends StatelessWidget {
+  final _auth = Auth();
+  AppDrawer({super.key});
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -37,6 +39,13 @@ class AppDrawer extends StatelessWidget {
           onTap: () {
             Navigator.of(context)
                 .pushReplacementNamed(UserProductsScreen.routName);
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.logout_outlined),
+          title: const Text('User logout'),
+          onTap: () {
+            _auth.signOut();
           },
         ),
       ]),
