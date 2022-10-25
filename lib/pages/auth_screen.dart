@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 
 enum AuthMode { signUp, login }
 
@@ -99,12 +101,15 @@ class _AuthCardState extends State<AuthCard> {
     if (_authMode == AuthMode.login) {
 // login
     } else {
-      //signIn
+      Provider.of<AuthProvider>(context, listen: false)
+          .registerWithEmailPassword(
+              _authData['email']!, _authData['password']!)
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
     }
-
-    // setState(() {
-    //   _isLoading = false;
-    // });
   }
 
   void _switchAuthMode() {

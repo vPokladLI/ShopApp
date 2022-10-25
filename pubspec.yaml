@@ -39,6 +39,9 @@ dependencies:
   intl: ^0.17.0
   form_validator: ^1.0.3
   http: ^0.13.5
+  firebase_core: ^2.1.0
+  firebase_auth: ^4.0.2
+  firebase_database: ^10.0.2
 
 dev_dependencies:
   flutter_test:

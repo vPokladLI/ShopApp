@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 import './pages/products_overview_screen.dart';
 import './pages/product_detailed_screen.dart';
@@ -12,8 +14,13 @@ import './pages/auth_screen.dart';
 import './providers/products_provider.dart';
 import './providers/cart.dart';
 import './providers/orders.dart';
+import './providers/auth_provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -28,6 +35,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => Products()),
         ChangeNotifierProvider(create: (context) => Cart()),
         ChangeNotifierProvider(create: (context) => Orders()),
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
       ],
       child: MaterialApp(
         title: 'Shop App',
@@ -38,6 +46,7 @@ class MyApp extends StatelessWidget {
             fontFamily: 'Lato',
             textTheme: const TextTheme(
                 titleLarge: TextStyle(fontWeight: FontWeight.w700))),
+        // home: const ProductsOverviewScreen(),
         home: const AuthScreen(),
         routes: {
           ProductsOverviewScreen.routName: (context) =>
