@@ -1,12 +1,12 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:firebase_database/firebase_database.dart';
 // import '../services/database.dart';
 import 'product_provider.dart';
 
+FirebaseDatabase database = FirebaseDatabase.instance;
+final ref = database.ref();
+
 class Products with ChangeNotifier {
-  static const _endpoint =
-      'flutter-shop-app-365508-default-rtdb.europe-west1.firebasedatabase.app';
   List<Product> _items = [];
 
   List<Product> get allItems {
@@ -22,14 +22,13 @@ class Products with ChangeNotifier {
   }
 
   Future fetchAndSetProducts() async {
-    final url = Uri.https(_endpoint, '/products.json');
-
-    final response = await http.get(url);
-    final extractedData = json.decode(response.body);
-
-    if (extractedData == null) {
+    final snapshot = await ref.child('/products').get();
+    if (snapshot.value == null) {
       return;
     }
+
+    final extractedData = snapshot.value as Map<dynamic, dynamic>;
+
     final List<Product> loadedProducts = [];
     extractedData.forEach((prodId, prodData) {
       loadedProducts.add(Product(
@@ -46,65 +45,56 @@ class Products with ChangeNotifier {
   }
 
   Future addProduct(Product product) async {
-    final url = Uri.https(_endpoint, '/products.json');
-    return http
-        .post(
-      url,
-      body: json.encode({
+    DatabaseReference productsRef = database.ref('/products');
+    DatabaseReference newProductRef = productsRef.push();
+    String? prodIdRef = productsRef.push().key;
+    try {
+      await newProductRef.set({
         'title': product.title,
         'description': product.description,
         'imageUrl': product.imageUrl,
         'price': product.price,
         'isFavorite': product.isFavorite,
-      }),
-    )
-        .then((response) {
-      (response.statusCode);
-      if (response.statusCode == 200) {
-        final newProduct = Product(
-          title: product.title,
-          description: product.description,
-          price: product.price,
-          imageUrl: product.imageUrl,
-          id: jsonDecode(response.body)['name'],
-        );
-        _items.add(newProduct);
-        notifyListeners();
-      }
-    });
-
-    // _items.insert(0, newProduct); // at the start of the list
+      });
+      final newProduct = Product(
+        title: product.title,
+        description: product.description,
+        price: product.price,
+        imageUrl: product.imageUrl,
+        id: prodIdRef,
+      );
+      _items.add(newProduct);
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future deleteProduct(String productId) async {
-    final url = Uri.https(_endpoint, '/products/$productId.json');
+    DatabaseReference ref = database.ref("/products/$productId");
+
     try {
-      final response = await http.delete(url);
-      if (response.statusCode == 200) {
-        _items.removeWhere((e) => e.id == productId);
-        notifyListeners();
-      }
+      await ref.remove();
+      _items.removeWhere((e) => e.id == productId);
+      notifyListeners();
     } catch (e) {
       rethrow;
     }
   }
 
   Future updateProduct(Product newProduct) async {
-    final url = Uri.https(_endpoint, '/products/${newProduct.id}.json');
+    DatabaseReference ref = database.ref("/products/${newProduct.id}");
     final index = _items.indexWhere((element) => element.id == newProduct.id);
     if (index >= 0) {
       try {
-        final response = await http.patch(url,
-            body: json.encode({
-              'description': newProduct.description,
-              'imageUrl': newProduct.imageUrl,
-              'price': newProduct.price,
-              'title': newProduct.title
-            }));
-        if (response.statusCode == 200) {
-          _items[index] = newProduct;
-          notifyListeners();
-        }
+        await ref.update({
+          'description': newProduct.description,
+          'imageUrl': newProduct.imageUrl,
+          'price': newProduct.price,
+          'title': newProduct.title
+        });
+        _items[index] = newProduct;
+        notifyListeners();
       } catch (e) {
         rethrow;
       }

@@ -92,7 +92,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
         _isLoading = false;
         Navigator.of(context).pop();
       }).onError((error, stackTrace) {
-        print(error);
         setState(() {
           _isLoading = false;
         });
@@ -104,7 +103,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
         _isLoading = false;
         Navigator.of(context).pop();
       }).onError((error, stackTrace) {
-        print(error);
         setState(() {
           _isLoading = false;
         });
