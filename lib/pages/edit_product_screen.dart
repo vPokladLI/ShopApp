@@ -86,15 +86,30 @@ class _EditProductScreenState extends State<EditProductScreen> {
     });
     _form.currentState!.save();
     if (_editedProduct.id != null) {
-      await Provider.of<Products>(context, listen: false)
-          .updateProduct(_editedProduct);
+      Provider.of<Products>(context, listen: false)
+          .updateProduct(_editedProduct)
+          .then((_) {
+        _isLoading = false;
+        Navigator.of(context).pop();
+      }).onError((error, stackTrace) {
+        print(error);
+        setState(() {
+          _isLoading = false;
+        });
+      });
     } else {
-      await Provider.of<Products>(context, listen: false)
-          .addProduct(_editedProduct);
+      Provider.of<Products>(context, listen: false)
+          .addProduct(_editedProduct)
+          .then((_) {
+        _isLoading = false;
+        Navigator.of(context).pop();
+      }).onError((error, stackTrace) {
+        print(error);
+        setState(() {
+          _isLoading = false;
+        });
+      });
     }
-    _isLoading = false;
-    // ignore: use_build_context_synchronously
-    Navigator.of(context).pop();
   }
 
   @override

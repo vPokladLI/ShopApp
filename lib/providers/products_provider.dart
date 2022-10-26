@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:shop_app/models/http_exception.dart';
 // import '../services/database.dart';
 import 'product_provider.dart';
 
@@ -26,7 +25,6 @@ class Products with ChangeNotifier {
     final url = Uri.https(_endpoint, '/products.json');
 
     final response = await http.get(url);
-    print(response.statusCode);
     final extractedData = json.decode(response.body);
 
     if (extractedData == null) {
@@ -61,6 +59,7 @@ class Products with ChangeNotifier {
       }),
     )
         .then((response) {
+      (response.statusCode);
       if (response.statusCode == 200) {
         final newProduct = Product(
           title: product.title,
@@ -106,7 +105,6 @@ class Products with ChangeNotifier {
           _items[index] = newProduct;
           notifyListeners();
         }
-        throw response.body;
       } catch (e) {
         rethrow;
       }

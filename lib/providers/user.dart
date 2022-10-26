@@ -1,9 +1,15 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 
-class LocalUser {
-  String? id;
+class LocalUser with ChangeNotifier {
+  String? _id;
+  LocalUser();
 
-  LocalUser.fromFirebase(User credential) {
-    id = credential.uid;
+  setId(String? id) {
+    _id = id;
+    notifyListeners();
+  }
+
+  get userId {
+    return _id;
   }
 }

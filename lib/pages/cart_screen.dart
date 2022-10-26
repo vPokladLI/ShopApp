@@ -107,12 +107,12 @@ class _OrderButtonState extends State<OrderButton> {
       Navigator.of(context).pushReplacementNamed(OrderScreen.routName);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          padding: EdgeInsets.symmetric(vertical: 50, horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
           backgroundColor: Theme.of(context).colorScheme.error,
           content: Text(
             e.toString(),
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           )));
     }
   }
@@ -124,8 +124,8 @@ class _OrderButtonState extends State<OrderButton> {
     return TextButton.icon(
       onPressed: placeOrder,
       icon: _isLoading
-          ? CircularProgressIndicator()
-          : Icon(Icons.monetization_on_sharp),
+          ? const CircularProgressIndicator()
+          : const Icon(Icons.monetization_on_sharp),
       label: const Text(
         'ORDER NOW',
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),

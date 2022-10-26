@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:shop_app/providers/user.dart';
 import '../models/http_exception.dart';
 
 class Auth {
