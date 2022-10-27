@@ -30,7 +30,7 @@ class Auth {
       if (e.code == 'user-not-found') {
         throw HttpException('No user found for that email.');
       } else if (e.code == 'wrong-password') {
-        throw HttpException('Wrong password provided for that user.');
+        throw HttpException('Wrong password or email provided for that user.');
       }
     }
   }

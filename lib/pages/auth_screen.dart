@@ -88,6 +88,20 @@ class _AuthCardState extends State<AuthCard> {
   AuthMode _authMode = AuthMode.login;
   final Map<String, String> _authData = {'email': '', 'password': ''};
   final _passwordController = TextEditingController();
+  void _showDialog(String message) {
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              content: Text(message),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                    child: const Text('Ok!'))
+              ],
+            ));
+  }
 
   @override
   void dispose() {
@@ -95,7 +109,7 @@ class _AuthCardState extends State<AuthCard> {
     super.dispose();
   }
 
-  void _submitForm() {
+  void _submitForm() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -105,23 +119,29 @@ class _AuthCardState extends State<AuthCard> {
     });
 
     if (_authMode == AuthMode.login) {
-      _auth
-          .loginWithEmailPassword(_authData['email']!, _authData['password']!)
-          .then((_) {
-        setState(() {
-          _isLoading = false;
-        });
+      try {
+        await _auth.loginWithEmailPassword(
+            _authData['email']!, _authData['password']!);
+      } catch (e) {
+        _showDialog(e.toString());
+      }
+
+      setState(() {
+        _isLoading = false;
       });
+    }
 
 // login
-    } else {
-      _auth
-          .registerWithEmailPassword(
-              _authData['email']!, _authData['password']!)
-          .then((_) {
-        setState(() {
-          _isLoading = false;
-        });
+    else {
+      try {
+        await _auth.registerWithEmailPassword(
+            _authData['email']!, _authData['password']!);
+      } catch (e) {
+        _showDialog(e.toString());
+      }
+
+      setState(() {
+        _isLoading = false;
       });
     }
   }
