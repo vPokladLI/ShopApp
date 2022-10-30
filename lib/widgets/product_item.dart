@@ -4,11 +4,14 @@ import '../pages/product_detailed_screen.dart';
 import '../providers/product_provider.dart';
 import '../providers/cart.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+
 class ProductItem extends StatelessWidget {
   const ProductItem({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User?>(context, listen: false);
     final product = Provider.of<Product>(context, listen: false);
 
     return Container(
@@ -30,7 +33,7 @@ class ProductItem extends StatelessWidget {
               builder: (_, product, __) => IconButton(
                   color: Theme.of(context).colorScheme.secondary,
                   onPressed: () {
-                    product.toggleFavorite();
+                    product.toggleFavorite(user?.uid as String);
                     ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         elevation: 10,

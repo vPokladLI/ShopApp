@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '../providers/cart.dart';
 import '../providers/products_provider.dart';
 
@@ -26,7 +28,9 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   void initState() {
     _isLoading = true;
     try {
-      Provider.of<Products>(context, listen: false).fetchAndSetProducts();
+      final user = Provider.of<User>(context, listen: false);
+      Provider.of<Products>(context, listen: false)
+          .fetchAndSetProducts(user.uid);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 10),

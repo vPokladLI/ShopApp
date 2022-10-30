@@ -36,17 +36,19 @@ class Orders with ChangeNotifier {
         return;
       }
       final extractedData = snapshot.value as Map<dynamic, dynamic>;
+      // print(extractedData);
 
       List<OrderItem> loadedOrders = [];
+
       extractedData.forEach((orderId, order) {
         loadedOrders.add(OrderItem(
             id: orderId,
-            amount: order['amount'],
+            amount: order['amount'].toDouble(),
             dateTime: DateTime.parse(order['dateTime']),
             products: (order['products'] as List<dynamic>)
                 .map((e) => CartItem(
                     id: e['id'],
-                    price: e['price'],
+                    price: e['price'].toDouble(),
                     quantity: e['quantity'],
                     title: e['title']))
                 .toList()));
@@ -76,13 +78,11 @@ class Orders with ChangeNotifier {
             .toList(),
         'dateTime': timeStamp.toIso8601String()
       });
-      _orders.insert(
-          0,
-          OrderItem(
-              amount: amount,
-              products: products,
-              dateTime: timeStamp,
-              id: orderId!));
+      _orders.add(OrderItem(
+          amount: amount,
+          products: products,
+          dateTime: timeStamp,
+          id: orderId!));
       notifyListeners();
     } catch (e) {
       throw HttpException('Failed to make order... Try again later');

@@ -8,6 +8,7 @@ final ref = database.ref();
 
 class Products with ChangeNotifier {
   List<Product> _items = [];
+  String? userId;
 
   List<Product> get allItems {
     return [..._items];
@@ -21,22 +22,34 @@ class Products with ChangeNotifier {
     return _items.firstWhere((e) => e.id == id);
   }
 
-  Future fetchAndSetProducts() async {
-    final snapshot = await ref.child('/products').get();
-    if (snapshot.value == null) {
+  Future fetchAndSetProducts(userId) async {
+    final DataSnapshot products = await ref.child('/products').get();
+    final DataSnapshot userFavorites =
+        await ref.child('/UserFavorites/$userId').get();
+    if (products.value == null) {
       return;
     }
 
-    final extractedData = snapshot.value as Map<dynamic, dynamic>;
+    final extractedData = products.value as Map<String, dynamic>;
 
     final List<Product> loadedProducts = [];
     extractedData.forEach((prodId, prodData) {
+      bool isUserFavorite(String prodId) {
+        // ignore: unnecessary_null_comparison
+        if (userFavorites == null) {
+          return false;
+        }
+        final userFavData = userFavorites.value as Map<String, bool>;
+        if (userFavData[prodId] == null) return false;
+        return userFavData[prodId]!;
+      }
+
       loadedProducts.add(Product(
         id: prodId,
         title: prodData['title'],
         description: prodData['description'],
         price: prodData['price'],
-        isFavorite: prodData['isFavorite'],
+        isFavorite: isUserFavorite(prodId),
         imageUrl: prodData['imageUrl'],
       ));
     });
@@ -54,7 +67,6 @@ class Products with ChangeNotifier {
         'description': product.description,
         'imageUrl': product.imageUrl,
         'price': product.price,
-        'isFavorite': product.isFavorite,
       });
       final newProduct = Product(
         title: product.title,

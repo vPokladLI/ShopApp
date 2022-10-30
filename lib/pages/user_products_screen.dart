@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../providers/products_provider.dart';
 import '../pages/edit_product_screen.dart';
@@ -16,8 +17,9 @@ class UserProductsScreen extends StatelessWidget {
     }
 
     final products = context.watch<Products>();
+    final user = Provider.of<User>(context, listen: false);
     Future<void> refreshItems() async {
-      products.fetchAndSetProducts();
+      products.fetchAndSetProducts(user.uid);
     }
 
     return Scaffold(

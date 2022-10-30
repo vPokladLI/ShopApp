@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../pages/products_overview_screen.dart';
 import '../pages/order_screen.dart';
@@ -11,10 +13,12 @@ class AppDrawer extends StatelessWidget {
   AppDrawer({super.key});
   @override
   Widget build(BuildContext context) {
+    final userEmail =
+        Provider.of<User?>(context, listen: false)?.email as String;
     return Drawer(
       child: Column(children: [
         AppBar(
-          title: const Text('Hello'),
+          title: Text('Hello, $userEmail'),
           automaticallyImplyLeading: false,
         ),
         const Divider(),
@@ -43,7 +47,7 @@ class AppDrawer extends StatelessWidget {
         ),
         ListTile(
           leading: const Icon(Icons.logout_outlined),
-          title: const Text('User logout'),
+          title: const Text(' Logout'),
           onTap: () {
             _auth.signOut();
             Navigator.of(context).pushReplacementNamed('/');

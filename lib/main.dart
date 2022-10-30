@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:shop_app/pages/landing_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 
 import './pages/products_overview_screen.dart';
@@ -37,32 +37,40 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => Products()),
         ChangeNotifierProvider(create: (context) => Cart()),
         ChangeNotifierProvider(create: (context) => Orders()),
-        ChangeNotifierProvider(create: (context) => LocalUser()),
         StreamProvider(
-            create: (context) => Auth().currentUser, initialData: null)
+            create: (context) => Auth().currentUser, initialData: null),
+        // ProxyProvider<User, Products>(
+        //   update: (context, user, previous) =>
+        //       Products(user.uid, previous == null ? [] : previous.allItems),
+        // )
       ],
-      child: MaterialApp(
-        title: 'Shop App',
-        theme: ThemeData(
-            colorScheme: (ColorScheme.fromSwatch(
-                primarySwatch: Colors.deepPurple,
-                accentColor: Colors.deepOrange)),
-            fontFamily: 'Lato',
-            textTheme: const TextTheme(
-                titleLarge: TextStyle(fontWeight: FontWeight.w700))),
-        // home: const ProductsOverviewScreen(),
-        home: const Landing(),
-        routes: {
-          ProductsOverviewScreen.routName: (context) =>
-              const ProductsOverviewScreen(),
-          ProductDetailedScreen.routName: (context) =>
-              const ProductDetailedScreen(),
-          CartScreen.routName: (context) => const CartScreen(),
-          OrderScreen.routName: (context) => const OrderScreen(),
-          UserProductsScreen.routName: (context) => const UserProductsScreen(),
-          EditProductScreen.routName: (context) => const EditProductScreen(),
-          AuthScreen.routName: (context) => const AuthScreen(),
-        },
+      child: Consumer<User?>(
+        builder: (context, auth, _) => MaterialApp(
+          title: 'Shop App',
+          theme: ThemeData(
+              colorScheme: (ColorScheme.fromSwatch(
+                  primarySwatch: Colors.deepPurple,
+                  accentColor: Colors.deepOrange)),
+              fontFamily: 'Lato',
+              textTheme: const TextTheme(
+                  titleLarge: TextStyle(fontWeight: FontWeight.w700))),
+          // home: const ProductsOverviewScreen(),
+          home: auth?.uid != null
+              ? const ProductsOverviewScreen()
+              : const AuthScreen(),
+          routes: {
+            ProductsOverviewScreen.routName: (context) =>
+                const ProductsOverviewScreen(),
+            ProductDetailedScreen.routName: (context) =>
+                const ProductDetailedScreen(),
+            CartScreen.routName: (context) => const CartScreen(),
+            OrderScreen.routName: (context) => const OrderScreen(),
+            UserProductsScreen.routName: (context) =>
+                const UserProductsScreen(),
+            EditProductScreen.routName: (context) => const EditProductScreen(),
+            AuthScreen.routName: (context) => const AuthScreen(),
+          },
+        ),
       ),
     );
   }

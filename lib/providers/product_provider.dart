@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
+
+FirebaseDatabase database = FirebaseDatabase.instance;
 
 class Product with ChangeNotifier {
   final String? id;
@@ -16,8 +19,14 @@ class Product with ChangeNotifier {
       required this.price,
       this.isFavorite = false});
 
-  void toggleFavorite() {
-    isFavorite = !isFavorite;
+  Future<void> toggleFavorite(String userId) async {
+    try {
+      isFavorite = !isFavorite;
+      final userRef = database.ref('/UserFavorites/$userId');
+      await userRef.update({id as String: isFavorite});
+    } catch (e) {
+      isFavorite = !isFavorite;
+    }
     notifyListeners();
   }
 }
