@@ -30,7 +30,7 @@ class Products with ChangeNotifier {
       return;
     }
 
-    final extractedData = products.value as Map<String, dynamic>;
+    final extractedData = products.value as Map<dynamic, dynamic>;
 
     final List<Product> loadedProducts = [];
     extractedData.forEach((prodId, prodData) {
@@ -39,7 +39,7 @@ class Products with ChangeNotifier {
         if (userFavorites == null) {
           return false;
         }
-        final userFavData = userFavorites.value as Map<String, bool>;
+        final userFavData = userFavorites.value as Map<dynamic, dynamic>;
         if (userFavData[prodId] == null) return false;
         return userFavData[prodId]!;
       }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../providers/orders.dart';
 import '../providers/cart.dart' show Cart;
@@ -99,8 +100,10 @@ class _OrderButtonState extends State<OrderButton> {
       setState(() {
         _isLoading = true;
       });
-      await Provider.of<Orders>(context, listen: false)
-          .addOrder(widget.cart.total, widget.cart.items.values.toList());
+      final user = Provider.of<User>(context, listen: false);
+
+      await Provider.of<Orders>(context, listen: false).addOrder(
+          widget.cart.total, widget.cart.items.values.toList(), user.uid);
 
       widget.cart.clear();
       // ignore: use_build_context_synchronously

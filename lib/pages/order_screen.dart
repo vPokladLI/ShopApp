@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '../providers/orders.dart' show Orders;
 import '../widgets/order_item.dart';
 import '../widgets/app_drawer.dart';
@@ -16,7 +18,10 @@ class _OrderScreenState extends State<OrderScreen> {
   var _isLoading = true;
   @override
   void initState() {
-    Provider.of<Orders>(context, listen: false).fetchAndSetOrders().then((_) {
+    final user = Provider.of<User>(context, listen: false);
+    Provider.of<Orders>(context, listen: false)
+        .fetchAndSetOrders(user.uid)
+        .then((_) {
       setState(() {
         _isLoading = false;
       });
@@ -26,9 +31,11 @@ class _OrderScreenState extends State<OrderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context, listen: false);
+
     final orders = context.watch<Orders>();
     Future<void> refreshOrders() async {
-      orders.fetchAndSetOrders();
+      orders.fetchAndSetOrders(user.uid);
     }
 
     return Scaffold(

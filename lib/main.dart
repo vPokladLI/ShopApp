@@ -39,9 +39,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => Orders()),
         StreamProvider(
             create: (context) => Auth().currentUser, initialData: null),
-        // ProxyProvider<User, Products>(
+        // ProxyProvider<User, Orders>(
         //   update: (context, user, previous) =>
-        //       Products(user.uid, previous == null ? [] : previous.allItems),
+        //       Orders(user.uid, previous?.items == null ? [] : previous!.items),
         // )
       ],
       child: Consumer<User?>(

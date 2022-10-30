@@ -28,10 +28,10 @@ class Orders with ChangeNotifier {
     return [..._orders];
   }
 
-  Future fetchAndSetOrders() async {
+  Future fetchAndSetOrders(String userId) async {
     // final url = Uri.https(_endpoint, '/orders.json');
     try {
-      final snapshot = await ref.child('/orders').get();
+      final snapshot = await ref.child('$userId/orders').get();
       if (snapshot.value == null) {
         return;
       }
@@ -59,9 +59,9 @@ class Orders with ChangeNotifier {
     }
   }
 
-  Future addOrder(double amount, List<CartItem> products) async {
+  Future addOrder(double amount, List<CartItem> products, String userId) async {
     final timeStamp = DateTime.now();
-    DatabaseReference ordersRef = database.ref('/orders');
+    DatabaseReference ordersRef = database.ref('$userId/orders');
     DatabaseReference newOrder = ordersRef.push();
     String? orderId = ordersRef.push().key;
 
