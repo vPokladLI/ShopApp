@@ -15,7 +15,6 @@ import '../pages/auth_screen.dart';
 import './providers/products_provider.dart';
 import './providers/cart.dart';
 import './providers/orders.dart';
-import './providers/user.dart';
 import 'services/auth_service.dart';
 
 void main() async {
