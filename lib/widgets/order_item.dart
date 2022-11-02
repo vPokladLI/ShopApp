@@ -26,18 +26,19 @@ class _OrderItemState extends State<OrderItem> {
         margin: const EdgeInsets.all(10),
         child: Column(
           children: <Widget>[
-            ListTile(
-              title: Text('\$${widget.order.amount}'),
-              subtitle: Text(
-                DateFormat('dd/MM/yyyy hh:mm').format(widget.order.dateTime),
-              ),
-              trailing: IconButton(
-                icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
-                onPressed: () {
-                  setState(() {
-                    _expanded = !_expanded;
-                  });
-                },
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _expanded = !_expanded;
+                });
+              },
+              child: ListTile(
+                title: Text('\$${widget.order.amount}'),
+                subtitle: Text(
+                  DateFormat('dd/MM/yyyy hh:mm').format(widget.order.dateTime),
+                ),
+                trailing:
+                    Icon(_expanded ? Icons.expand_less : Icons.expand_more),
               ),
             ),
             AnimatedContainer(
