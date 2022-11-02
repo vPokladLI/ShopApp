@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../pages/product_detailed_screen.dart';
@@ -84,9 +86,15 @@ class ProductItem extends StatelessWidget {
               Navigator.of(context).pushNamed(ProductDetailedScreen.routName,
                   arguments: product.id);
             },
-            child: Image.network(
-              product.imageUrl,
-              fit: BoxFit.cover,
+            child: Hero(
+              tag: product.id as Object,
+              child: FadeInImage(
+                  fit: BoxFit.cover,
+                  placeholder:
+                      const AssetImage('assets/images/product-placeholder.png'),
+                  image: NetworkImage(
+                    product.imageUrl,
+                  )),
             ),
           ),
         ),

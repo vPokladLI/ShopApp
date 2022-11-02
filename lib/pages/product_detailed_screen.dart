@@ -71,9 +71,12 @@ class ProductDetailedScreen extends StatelessWidget {
                   height: mediaQ.size.height -
                       mediaQ.padding.top -
                       appBar.preferredSize.height,
-                  child: Image.network(
-                    product.imageUrl,
-                    fit: BoxFit.scaleDown,
+                  child: Hero(
+                    tag: product.id as Object,
+                    child: Image.network(
+                      product.imageUrl,
+                      fit: BoxFit.scaleDown,
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -110,10 +113,13 @@ class ProductDetailedScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     height: mediaQ.size.height / 2,
-                    child: Image.network(
-                      product.imageUrl,
-                      fit: BoxFit.contain,
-                      alignment: Alignment.topCenter,
+                    child: Hero(
+                      tag: product.id as Object,
+                      child: Image.network(
+                        product.imageUrl,
+                        fit: BoxFit.contain,
+                        alignment: Alignment.topCenter,
+                      ),
                     ),
                   ),
                   const SizedBox(
